@@ -34,7 +34,7 @@ if (durationCanvas && window.Chart) {
       datasets: [{
         label: 'Días programados',
         data: durationData,
-        backgroundColor: ['#3f7f2a','#3f7f2a','#f3b300','#f3b300','#f07818','#f07818'],
+        backgroundColor: ['#2563EB','#2563EB','#F59E0B','#F59E0B','#EA580C','#EA580C'],
         borderRadius: 10,
         barThickness: 20
       }]
@@ -60,7 +60,7 @@ if (budgetCanvas && window.Chart) {
       datasets: [{
         label: 'Presupuesto estimado',
         data: budgetData,
-        backgroundColor: ['#3f7f2a','#3f7f2a','#f3b300','#f3b300','#f07818','#f07818'],
+        backgroundColor: ['#2563EB','#2563EB','#F59E0B','#F59E0B','#EA580C','#EA580C'],
         borderRadius: 10
       }]
     },
@@ -76,4 +76,37 @@ if (budgetCanvas && window.Chart) {
       }
     }
   });
+}
+
+
+// Animación sencilla para indicadores del encabezado
+const counters = document.querySelectorAll('.counter');
+let countersStarted = false;
+function animateCounters(){
+  if(countersStarted) return;
+  countersStarted = true;
+  counters.forEach(counter => {
+    const target = Number(counter.dataset.target || 0);
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 50));
+    const timer = setInterval(() => {
+      current += step;
+      if(current >= target){
+        counter.textContent = target;
+        clearInterval(timer);
+      } else {
+        counter.textContent = current;
+      }
+    }, 24);
+  });
+}
+
+if('IntersectionObserver' in window){
+  const stats = document.querySelector('.animated-stats');
+  const observer = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting) animateCounters();
+  }, { threshold: 0.35 });
+  if(stats) observer.observe(stats);
+} else {
+  animateCounters();
 }
